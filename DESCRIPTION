@@ -1,0 +1,25 @@
+Package: spheresmooth
+Type: Package
+Title: spheresmooth
+Version: 0.1.0
+Author:  
+  - name: Seyoung Lee
+    affiliation: Sungshin Women's University
+    address: 20210861@sungshin.ac.kr
+    - School of Mathematics, Statistics and Data Science
+    - 2, Bomun-ro 34da-gil, Seongbuk-gu, Seoul 02844,  Republic of Korea
+  - name: Kwan-Young Bak
+    affiliation: Sungshin Women's University
+    address:
+    - School of Mathematics, Statistics and Data Science
+    - Data Science Center
+    - 2, Bomun-ro 34da-gil, Seongbuk-gu, Seoul 02844,  Republic of Korea
+    email: kybak@sungshin.ac.kr
+    orcid: 0000-0002-4541-160X
+Maintainer: Seyoung Lee <20210861@sungshin.ac.kr>
+            Kwan-Young Bak <kybak@sungshin.ac.kr>
+Description: This package provides a collection of functions for working with spherical geometry. It includes functions for converting between Cartesian and spherical coordinates, computing distances and angles on the sphere, fitting penalized linear spherical splines, and more. This package propose a picewise geodesic curve fitting method based on the velocity-based penalization scheme. The `spheresmooth` package implements the proposed method with the Riemannian block coordinate descent algorithm. It provides an automatic procedure for fitting a smooth path to a given set of noisy spherical data at known times.
+License: GPL (>= 2)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.1
