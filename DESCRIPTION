@@ -1,24 +1,24 @@
 Package: spheresmooth
 Type: Package
-Title: spheresmooth
+Title: Piecewise Geodesic Smoothing for Spherical Data
 Version: 0.1.0
-Author:  
-  - name: Seyoung Lee
-    affiliation: Sungshin Women's University
-    address: 20210861@sungshin.ac.kr
-    - School of Mathematics, Statistics and Data Science
-    - 2, Bomun-ro 34da-gil, Seongbuk-gu, Seoul 02844,  Republic of Korea
-  - name: Kwan-Young Bak
-    affiliation: Sungshin Women's University
-    address:
-    - School of Mathematics, Statistics and Data Science
-    - Data Science Center
-    - 2, Bomun-ro 34da-gil, Seongbuk-gu, Seoul 02844,  Republic of Korea
-    email: kybak@sungshin.ac.kr
-    orcid: 0000-0002-4541-160X
-Maintainer: Seyoung Lee <20210861@sungshin.ac.kr>
-            Kwan-Young Bak <kybak@sungshin.ac.kr>
-Description: This package provides a collection of functions for working with spherical geometry. It includes functions for converting between Cartesian and spherical coordinates, computing distances and angles on the sphere, fitting penalized linear spherical splines, and more. This package propose a picewise geodesic curve fitting method based on the velocity-based penalization scheme. The `spheresmooth` package implements the proposed method with the Riemannian block coordinate descent algorithm. It provides an automatic procedure for fitting a smooth path to a given set of noisy spherical data at known times.
+Authors@R: 
+  c(person(given = "Seyoung",
+           family = "Lee",
+           role = c("aut"),
+           email = "20210861@sungshin.ac.kr",
+           comment = "Sungshin Women's University"),
+    person(given = "Kwan-Young",
+           family = "Bak",
+           role = c("aut", "cre"),
+           email = "kybak@sungshin.ac.kr",
+           comment = c(ORCID = "0000-0002-4541-160X", "Sungshin Women's University")))
+Description: This package offers a method of fitting a smooth path to a given set of noisy spherical data
+  observed at known time. It implements a piecewise geodesic curve fitting method on the unit sphere 
+  based on a velocity-based penalization scheme. The proposed approach is implemented using the 
+  Riemannian block coordinate descent algorithm. To understand the method and algorithm, you can refer to 
+  Bak, K. Y., Shin, J. K., & Koo, J. Y. (2023) paper for the case of order 1. Additionally, this package 
+  includes various functions necessary for handling spherical data.
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
