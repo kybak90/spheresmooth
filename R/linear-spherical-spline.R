@@ -374,6 +374,30 @@ Geodesic = function(t, p, q, a, b)
   return(gamma)
 }
 
+#' Generate knots for the piecewise gedeosic curve based on the quantiles.
+#'
+#' This function computes points along the geodesic connecting two points p and q on a Riemannian manifold at specified time points.
+#'
+#' @param x Numeric vector representing time points for the geodesic path.
+#' @param dimension Numeric vector representing the starting point.
+#' @param tiny Numeric vector representing the ending point.
+#' @return Numeric vector representing knots sequence in the time domain.
+#' @export
+#' @examples
+#' knots_quantile(seq(0, 1, length.out = 100), 10)
+knots_quantile = function(x, dimension, tiny = 1e-5)
+{
+  dimension = max(dimension, 2)
+  number_interior_knots = dimension - 2
+  if (number_interior_knots > 0)
+    probs = (1 : number_interior_knots) / (number_interior_knots + 1)
+  else
+    probs = NULL
+  interior_knots = quantile(x[c(-1, -length(x))], probs, type = 3)
+  knots = c(min(x) - tiny, interior_knots, max(x) + tiny)
+  return(knots)
+}
+
 #' Penalized Linear Spherical Spline
 #'
 #' This function fits a penalized linear spherical spline to the given data.
