@@ -114,7 +114,7 @@ norm2 = function(u)
 #' @examples
 #' normalize(c(1,2,3))
 normalize = function(v) {
-  normalized_v = v / norm(v)
+  normalized_v = v / norm2(v)
   return(normalized_v)
 }
 
@@ -236,6 +236,8 @@ spherical_to_cartesian = function(theta_phi)
 #' @export
 Spherical_to_Cartesian = function(theta_phi)
 {
+  if (is.vector(theta_phi))
+    theta_phi = matrix(theta_phi, ncol = 2)
   cartesian_coordinates = t(apply(theta_phi, 1, spherical_to_cartesian))
   return(cartesian_coordinates)
 }
@@ -387,6 +389,7 @@ Geodesic = function(t, p, q, a, b)
 #' knots_quantile(seq(0, 1, length.out = 100), 10)
 knots_quantile = function(x, dimension, tiny = 1e-5)
 {
+  x = unique(x)
   dimension = max(dimension, 2)
   number_interior_knots = dimension - 2
   if (number_interior_knots > 0)
@@ -403,7 +406,7 @@ knots_quantile = function(x, dimension, tiny = 1e-5)
 #' This function fits a penalized linear spherical spline to the given data.
 #'
 #' This function estimates the optimal control points and knots for the given data, fits the model, and returns the optimized result.
-#' Internally, gradient descent is used to minimize the loss of a given model, and a penalty term is added to control the complexity of the model.
+#' Internally, coordinate-wise gradient descent is used to minimize the loss of a given model, and a penalty term is added to control the complexity of the model.
 #' Additionally, the BIC (Bayesian Information Criterion) value is calculated according to the model's complexity to provide information for model selection.
 #' The function constructs piecewise curves using the piecewise_geodesic function and employs penalty terms to control the complexity of the model by updating control points and knots.
 #' Its purpose is to find the optimal linear piecewise spline for the given data while controlling model complexity through penalty terms.
@@ -418,11 +421,11 @@ knots_quantile = function(x, dimension, tiny = 1e-5)
 #' @param epsilon_iter A numeric value specifying the convergence criterion for iterations. Default is 1e-05.
 #' @param jump_eps A numeric value specifying the threshold for pruning control points based on jump size. Default is 1e-02.
 #' @param verbose A logical value indicating whether to print progress information. Default is FALSE.
-#' @return A list containing the fit information.
+#' @return A list containing the fitted result for each complexity parameter and bic values for model selection. One might choose the element that corresponds to the minimum bic values as illustrated in the example.
 #' @export
-penalized_linear_spherical_spline= function(t, y, initial_control_points = NULL, dimension, initial_knots,
-                                                  lambdas, step_size = 0.01, maxiter = 1000,
-                                                  epsilon_iter = 1e-05, jump_eps = 1e-02, verbose = FALSE)
+penalized_linear_spherical_spline = function(t, y, initial_control_points = NULL, dimension, initial_knots,
+                                                  lambdas, step_size = 1, maxiter = 1000,
+                                                  epsilon_iter = 1e-03, jump_eps = 1e-04, verbose = FALSE)
 {
   fit = list()
   sample_size = length(t)
@@ -488,8 +491,11 @@ penalized_linear_spherical_spline= function(t, y, initial_control_points = NULL,
         }
 
         penalty_check = jump_size < jump_eps
-        cat("jump size =", jump_size, "\n")
-        cat("knotss =", as.numeric(knots), "\n")
+        if (verbose)
+        {
+          cat("jump size =", jump_size, "\n")
+          cat("knotss =", as.numeric(knots), "\n")
+        }
         if (sum(penalty_check) > 0)
         {
           prune_index = which(penalty_check)
@@ -563,44 +569,6 @@ piecewise_geodesic = function(t, control_points, knots)
     gamma = rbind(gamma, piece_gamma)
   }
   return(gamma)
-}
-
-#' Calculate the Gradient of Loss Function for Linear Spline
-#'
-#' This function calculates the gradient of the loss function for a linear spline model.
-#'
-#' @param y Matrix of observed values.
-#' @param t Vector of time or location values.
-#' @param control_points Matrix of control points.
-#' @param knots Vector of knots.
-#' @param index Index of the control point.
-#' @return Matrix containing the gradient of the loss function.
-#' @export
-Rgradient_loss_linear_spline = function(y, t, control_points, knots, index)
-{
-  Rgrad = matrix(0, 1, 3)
-  J = nrow(control_points)
-  if (index > 1)
-  {
-    sub_knots = knots[(index - 1) : index]
-    sub_control_points = control_points[(index - 1) : index, ]
-    I_j = knots[index - 1] <= t & t < knots[index]
-    sub_y = y[I_j, ]
-    sub_t = t[I_j]
-    m_j = (sub_t - sub_knots[1]) / (sub_knots[2] - sub_knots[1])
-    Rgrad = Rgradient_loss_linear(sub_y, m_j, sub_control_points, 2)
-  }
-  if (index < J)
-  {
-    sub_knots = knots[index : (index + 1)]
-    sub_control_points = control_points[index : (index + 1), ]
-    I_j = knots[index] <= t & t < knots[index + 1]
-    sub_y = y[I_j, ]
-    sub_t = t[I_j]
-    m_j = (sub_t - sub_knots[1]) / (sub_knots[2] - sub_knots[1])
-    Rgrad = Rgrad + Rgradient_loss_linear(sub_y, m_j, sub_control_points, 1)
-  }
-  return(Rgrad)
 }
 
 #' Calculate Loss Function
@@ -745,4 +713,137 @@ jump_linear = function(control_points, knots)
       (b1 + b2) * control_points[j + 1, ] + c * control_points[j, ]
   }
   return(jump_vector)
+}
+
+#' Calculate the Gradient of Loss Function for Linear Spline Curve
+#'
+#' This function calculates the gradient of the loss function for a linear spline curve.
+#'
+#' @param y Matrix of observed values.
+#' @param t Vector of time or location values.
+#' @param control_points Matrix of control points.
+#' @param knots Vector of knots.
+#' @param index Index of the control point.
+#' @return Matrix containing the gradient of the loss function.
+#' @export
+Rgradient_loss_linear_spline = function(y, t, control_points, knots, index)
+{
+  Rgrad = matrix(0, 1, 3)
+  J = nrow(control_points)
+  if (index > 1)
+  {
+    sub_knots = knots[(index - 1) : index]
+    sub_control_points = control_points[(index - 1) : index, ]
+    I_j = knots[index - 1] <= t & t < knots[index]
+    sub_y = y[I_j, ]
+    sub_t = t[I_j]
+    m_j = (sub_t - sub_knots[1]) / (sub_knots[2] - sub_knots[1])
+    Rgrad = Rgradient_loss_linear(sub_y, m_j, sub_control_points, 2)
+  }
+  if (index < J)
+  {
+    sub_knots = knots[index : (index + 1)]
+    sub_control_points = control_points[index : (index + 1), ]
+    I_j = knots[index] <= t & t < knots[index + 1]
+    sub_y = y[I_j, ]
+    sub_t = t[I_j]
+    m_j = (sub_t - sub_knots[1]) / (sub_knots[2] - sub_knots[1])
+    Rgrad = Rgrad + Rgradient_loss_linear(sub_y, m_j, sub_control_points, 1)
+  }
+  return(Rgrad)
+}
+
+
+gradient_linear_point = function(t, control_points, index)
+{
+  grad_linear = matrix(0, 3, 3)
+  theta = spherical_dist(control_points[1, ], control_points[2, ])
+  Q_t = calculate_Q_s(theta, t)
+  Q_1_t = calculate_Q_s(theta, 1 - t)
+  if (index == 1)
+  {
+    R_1_t = calculate_R_s(theta, 1 - t)
+    grad_linear = R_1_t * diag(1, 3) + Q_1_t * outer(control_points[2, ], control_points[1, ]) +
+      Q_t * outer(control_points[2, ], control_points[2, ])
+  }
+  else if (index == 2)
+  {
+    R_t = calculate_R_s(theta, t)
+    grad_linear = R_t * diag(1, 3) + Q_1_t * outer(control_points[1, ], control_points[1, ]) +
+      Q_t * outer(control_points[1, ], control_points[2, ])
+  }
+  else
+    grad_linear = matrix(0, 3, 3)
+  return(grad_linear)
+}
+
+Rgradient_loss_point_linear = function(y, t, control_points, index)
+{
+  grad_linear_bezier = gradient_linear_point(t, control_points, index)
+  linear_bezier_t = Geodesic(t, control_points[1, ], control_points[2, ], 0, 1)
+  phi = spherical_dist(y, linear_bezier_t)
+  proj = calculate_projection_p(control_points[index, ], grad_linear_bezier %*% y)
+  Aphi = calculate_Apsi(phi)
+  Rgradient_linear_bezier = - Aphi * proj
+  return(Rgradient_linear_bezier)
+}
+
+Rgradient_loss_linear = function(y, t, control_points, index)
+{
+  N = length(t)
+  grad_linear_bezier = matrix(0, 1, 3)
+  y = matrix(y, N, 3)
+  for (n in 1 : N)
+    grad_linear_bezier = grad_linear_bezier + t(Rgradient_loss_point_linear(y[n, ], t[n], control_points, index))
+  return(grad_linear_bezier)
+}
+
+# calculate c(t) = dist(p(t), q(t))
+calculate_c_t = function(p_t, q_t)
+{
+  c_t = rep(0, nrow(p_t))
+  for (i in 1 : nrow(p_t))
+    c_t[i] = dist(p_t[i, ], q_t[i, ])
+  return(c_t)
+}
+
+# calculate R_s(c(t))
+calculate_R_s_c_t = function(c_t, s)
+{
+  R_s_c_t = rep(0, length(s))
+  for (i in 1 : length(s))
+    R_s_c_t[i] = calculate_R_s(c_t[i], s[i])
+  return(R_s_c_t)
+}
+
+# R(theta, s) = sin(s theta) / sin(theta)
+calculate_R_s = function(theta, s)
+{
+  if (theta == 0)
+    return(0)
+  else
+    return(sin(theta * s) / sin(theta))
+}
+
+# calculate Q_s(theta)
+calculate_Q_s = function(theta, s)
+{
+  value_Qs = (sin(s * theta) * cos(theta) - s * cos(s * theta) * sin(theta)) / sin(theta)^3
+  return(value_Qs)
+}
+
+# psi / sin(psi)
+calculate_Apsi = function(psi)
+{
+  if (sum(psi^2) == 0)
+    return(0)
+  else
+    return(psi / sin(psi))
+}
+
+# projection y on sphere onto tangent plane at p
+calculate_projection_p = function(p, y)
+{
+  proj_y = (y - p * dot(p, y)) #/ norm2(y - p * dot(p, y))
+  return(proj_y)
 }

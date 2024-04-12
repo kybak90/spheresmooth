@@ -2,7 +2,7 @@
 % Please edit documentation in R/linear-spherical-spline.R
 \name{Rgradient_loss_linear_spline}
 \alias{Rgradient_loss_linear_spline}
-\title{Calculate the Gradient of Loss Function for Linear Spline}
+\title{Calculate the Gradient of Loss Function for Linear Spline Curve}
 \usage{
 Rgradient_loss_linear_spline(y, t, control_points, knots, index)
 }
@@ -21,5 +21,5 @@ Rgradient_loss_linear_spline(y, t, control_points, knots, index)
 Matrix containing the gradient of the loss function.
 }
 \description{
-This function calculates the gradient of the loss function for a linear spline model.
+This function calculates the gradient of the loss function for a linear spline curve.
 }
