@@ -11,10 +11,10 @@ penalized_linear_spherical_spline(
   dimension,
   initial_knots,
   lambdas,
-  step_size = 0.01,
+  step_size = 1,
   maxiter = 1000,
-  epsilon_iter = 1e-05,
-  jump_eps = 0.01,
+  epsilon_iter = 0.001,
+  jump_eps = 1e-04,
   verbose = FALSE
 )
 }
@@ -42,14 +42,14 @@ penalized_linear_spherical_spline(
 \item{verbose}{A logical value indicating whether to print progress information. Default is FALSE.}
 }
 \value{
-A list containing the fit information.
+A list containing the fitted result for each complexity parameter and bic values for model selection. One might choose the element that corresponds to the minimum bic values as illustrated in the example.
 }
 \description{
 This function fits a penalized linear spherical spline to the given data.
 }
 \details{
 This function estimates the optimal control points and knots for the given data, fits the model, and returns the optimized result.
-Internally, gradient descent is used to minimize the loss of a given model, and a penalty term is added to control the complexity of the model.
+Internally, coordinate-wise gradient descent is used to minimize the loss of a given model, and a penalty term is added to control the complexity of the model.
 Additionally, the BIC (Bayesian Information Criterion) value is calculated according to the model's complexity to provide information for model selection.
 The function constructs piecewise curves using the piecewise_geodesic function and employs penalty terms to control the complexity of the model by updating control points and knots.
 Its purpose is to find the optimal linear piecewise spline for the given data while controlling model complexity through penalty terms.
