@@ -2,7 +2,7 @@
 % Please edit documentation in R/linear-spherical-spline.R
 \name{spherical_dist}
 \alias{spherical_dist}
-\title{Calculate Distance Between Two Vectors}
+\title{Calculate spherical distance between two vectors}
 \usage{
 spherical_dist(x, y)
 }
@@ -15,7 +15,7 @@ spherical_dist(x, y)
 The distance between vectors x and y.
 }
 \description{
-This function calculates the distance between two vectors using the dot product.
+This function calculates the spherical distance between two vectors.
 }
 \examples{
 x <- c(1, 0, 0)

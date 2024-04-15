@@ -2,22 +2,22 @@
 % Please edit documentation in R/linear-spherical-spline.R
 \name{knots_quantile}
 \alias{knots_quantile}
-\title{Generate knots for the piecewise gedeosic curve based on the quantiles.}
+\title{Generate knots for the piecewise geodesic curve based on the quantiles}
 \usage{
 knots_quantile(x, dimension, tiny = 1e-05)
 }
 \arguments{
 \item{x}{Numeric vector representing time points for the geodesic path.}
 
-\item{dimension}{Numeric vector representing the starting point.}
+\item{dimension}{Numeric vector the number of knots.}
 
-\item{tiny}{Numeric vector representing the ending point.}
+\item{tiny}{Numeric value representing a small constant that slightly expands the boundary.}
 }
 \value{
 Numeric vector representing knots sequence in the time domain.
 }
 \description{
-This function computes points along the geodesic connecting two points p and q on a Riemannian manifold at specified time points.
+This generates a sequence of knots for a given set of time points based on the quantiles.
 }
 \examples{
 knots_quantile(seq(0, 1, length.out = 100), 10)

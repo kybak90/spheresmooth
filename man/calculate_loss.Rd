@@ -15,5 +15,5 @@ calculate_loss(y, gamma)
 Loss value.
 }
 \description{
-This function calculates the loss function based on the distance between observed values and predicted values.
+This function calculates the loss function based on the squared spherical distances between observed values and predicted values on the curve.
 }

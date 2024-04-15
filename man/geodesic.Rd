@@ -2,16 +2,16 @@
 % Please edit documentation in R/linear-spherical-spline.R
 \name{Geodesic}
 \alias{Geodesic}
-\title{Compute points along the geodesic connecting two points on a Riemannian manifold at specified time points}
+\title{Compute the value of the geodesic curve connecting two points on the unit sphere for a given set of time points t}
 \usage{
 Geodesic(t, p, q, a, b)
 }
 \arguments{
 \item{t}{Numeric vector representing time points for the geodesic path.}
 
-\item{p}{Numeric vector representing the starting point.}
+\item{p}{Numeric vector representing the starting point on the sphere.}
 
-\item{q}{Numeric vector representing the ending point.}
+\item{q}{Numeric vector representing the ending point on the sphere.}
 
 \item{a}{Start time parameter.}
 
@@ -21,7 +21,7 @@ Geodesic(t, p, q, a, b)
 Numeric matrix representing points along the geodesic path at specified time points.
 }
 \description{
-This function computes points along the geodesic connecting two points p and q on a Riemannian manifold at specified time points.
+This function computes the value of the geodesic curve connecting two points p and q on the unit sphere at specified time points.
 }
 \examples{
 Geodesic(c(0.25, 0.5, 0.75), c(1,0,0), c(0,1,0), 0, 1)

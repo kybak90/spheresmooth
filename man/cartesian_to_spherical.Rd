@@ -2,7 +2,7 @@
 % Please edit documentation in R/linear-spherical-spline.R
 \name{Cartesian_to_Spherical}
 \alias{Cartesian_to_Spherical}
-\title{Convert Cartesian Coordinates to Spherical Coordinates}
+\title{Convert Cartesian coordinates to cpherical coordinates}
 \usage{
 Cartesian_to_Spherical(x)
 }
@@ -21,9 +21,9 @@ Theta represents the inclination angle (0 to pi), and phi represents the azimuth
 }
 \examples{
 #example1
-cartesian_points1 <- matrix(c(1, 1, 1,-1, 1, -1, 0, 0, 1),ncol = 3, byrow = TRUE)
+cartesian_points1 <- matrix(c(1/sqrt(3), 1/sqrt(3), 1/sqrt(3),-1/sqrt(3), 1/sqrt(3), -1/sqrt(3)),ncol = 3, byrow = TRUE)
 Cartesian_to_Spherical(cartesian_points1)
 #example2
-cartesian_points2 <- matrix(c(4, 5, 9, -1, 0, 4, 5, 3, -1),ncol = 3, byrow = TRUE)
+cartesian_points2 <- matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1),ncol = 3, byrow = TRUE)
 Cartesian_to_Spherical(cartesian_points2)
 }

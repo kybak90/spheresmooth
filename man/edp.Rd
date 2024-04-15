@@ -15,6 +15,3 @@ Numeric vector representing the equal-distance projection of p onto the xy plane
 \description{
 This function computes the equal-distance projection of a point p onto the xy plane.
 }
-\examples{
-edp(c(1,1,1))
-}

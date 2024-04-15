@@ -2,18 +2,18 @@
 % Please edit documentation in R/linear-spherical-spline.R
 \name{Spherical_to_Cartesian}
 \alias{Spherical_to_Cartesian}
-\title{Convert Spherical Coordinates to Cartesian Coordinates for Multiple Points}
+\title{Convert spherical coordinates to Cartesian coordinates}
 \usage{
 Spherical_to_Cartesian(theta_phi)
 }
 \arguments{
-\item{theta_phi}{Matrix where each row contains the spherical coordinates (theta, phi) of a point.}
+\item{theta_phi}{A matrix where each row contains the spherical coordinates (theta, phi) of a point.}
 }
 \value{
-Matrix where each row contains the Cartesian coordinates (x, y, z) of a point.
+A matrix where each row contains the Cartesian coordinates (x, y, z) of a point.
 }
 \description{
-This function converts spherical coordinates (theta, phi) to Cartesian coordinates for multiple points.
+This function converts spherical coordinates (theta, phi) to Cartesian coordinates.
 }
 \examples{
 theta_phi <- matrix(c(pi/4, pi/3, pi/6, pi/4), ncol = 2, byrow = TRUE)

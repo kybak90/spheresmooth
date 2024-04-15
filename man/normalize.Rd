@@ -13,7 +13,7 @@ Normalize(x)
 Numeric matrix with normalized rows.
 }
 \description{
-This function normalizes the rows of the input matrix x by applying the normalize function to each row.
+This function normalizes the rows of the input matrix x by dividing each row by its L2 norm (Euclidean norm).
 }
 \examples{
 Normalize(matrix(c(1,2,3,4,5,6), nrow = 2, byrow = TRUE))

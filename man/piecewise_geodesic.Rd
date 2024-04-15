@@ -23,20 +23,22 @@ This function computes a piecewise geodesic path between control points.
 This function calculates the piecewise geodesic curve between control points based on the provided knots. The geodesic curve is computed segment by segment between adjacent control points. It interpolates the path between control points in a geodesic manner, ensuring the shortest path along the surface.
 }
 \examples{
+# `rgl` package and `sphereplot` pacakges are needed for the visualizaiton of the following example.
 # Define control points and knots
-control_points <- matrix(c(2, 1, 0,   # Control point 1
-                          3, 4, 2,   # Control point 2
-                          5, 6, 3,   # Control point 3
-                          7, 2, 1),  # Control point 4
-                        nrow = 4, byrow = TRUE)
-knots <- c(0, 1, 2, 3, 4)  # Knots indicating transitions
+library(rgl)
+library(sphereplot)
+control_points <- matrix(c(1, 0, 0,                         # Control point 1
+                          1/sqrt(2), 1/sqrt(2), 0,          # Control point 2
+                          -1/sqrt(3), 1/sqrt(3), 1/sqrt(3), # Control point 3
+                          0, 0, 1),                         # Control point 4
+                          nrow = 4, byrow = TRUE)
+knots <- c(1, 2, 3, 3.5)  # Knots indicating transitions
 # Example of generating piecewise geodesic curve
-t_example <- seq(0, 4, by = 0.1)
+t_example <- seq(0, 4, by = 0.01)
 gamma_example <- piecewise_geodesic(t_example, control_points, knots)
 # Plotting the piecewise geodesic curve
-rgl.sphgrid(deggap = 90, col.long = "skyblue", col.lat = "skyblue")
-spheres3d(x = 0, y = 0, z = 0, radius = 1, col = "grey",
-         alpha = 0.05)
-pch3d(rbind(v, w), col = "blue", cex = 0.3)
-lines3d(gamma_example, col = "red", lty = 2)
+rgl.sphgrid(deggap = 45, col.long = "skyblue", col.lat = "skyblue")
+spheres3d(x = 0, y = 0, z = 0, radius = 1, col = "grey", alpha = 0.05)
+pch3d(control_points, col = "blue", cex = 0.2, pch = 19)
+lines3d(gamma_example, col = "red", lty = 1, lwd = 2)
 }

@@ -1,79 +1,3 @@
-#' Compute the arccosine of x
-#'
-#' This function computes the arccosine of the input value x.
-#'
-#' @param x Numeric vector.
-#' @return Numeric vector containing the arccosine of each element of x.
-#' @examples
-#' Acos(0)
-Acos = function(x)
-{
-  x = restrict(x, -1.0, +1.0)
-  return(acos(x))
-}
-
-#' Compute the arcsine of x
-#'
-#' This function computes the arcsine of the input value x.
-#'
-#' @param x Numeric vector.
-#' @return Numeric vector containing the arcsine of each element of x.
-#' @examples
-#' Asin(0)
-#' @export
-Asin = function(x)
-{
-  x = restrict(x, -1.0, +1.0)
-  return(asin(x))
-}
-
-#' Compute the arc tangent of y/x
-#'
-#' This function computes the arc tangent of the input values y and x.
-#'
-#' @param y Numeric vector, the y-coordinate.
-#' @param x Numeric vector, the x-coordinate.
-#' @return Numeric vector containing the arctangent of y/x.
-#' @export
-#' @examples
-#' Atan(0, 1)
-Atan = function(y, x)
-{
-  # Special cases:
-  if (x == 0.0)
-  {
-    if (0.0 < y)
-      atan_yx = pi / 2.0
-    else if (y < 0.0 )
-      atan_yx = 3.0 * pi / 2.0
-    else if ( y == 0.0 )
-      atan_yx = 0.0
-  }
-  else if (y == 0.0)
-  {
-    if (0.0 < x)
-      atan_yx = 0.0
-    else if (x < 0.0)
-      atan_yx = pi
-  }
-  else
-  {
-
-    abs_y = abs(y)
-    abs_x = abs(x)
-    theta = atan2(abs_y, abs_x)
-    if (0.0 < x & 0.0 < y)
-      atan_yx = theta
-    else if (x < 0.0 & 0.0 < y)
-      atan_yx = pi - theta
-    else if (x < 0.0 & y < 0.0)
-      atan_yx = pi + theta
-    else if (0.0 < x & y < 0.0)
-      atan_yx = 2.0 * pi - theta
-  }
-  return(atan_yx)
-}
-
 #' Compute the dot product of two vectors
 #'
 #' This function computes the dot product of two input vectors u and v.
@@ -104,15 +28,7 @@ norm2 = function(u)
   return(ell2_norm_u)
 }
 
-#' Normalize a vector
-#'
-#' This function normalizes the input vector v by dividing it by its L2 norm (Euclidean norm).
-#'
-#' @param v Numeric vector.
-#' @return Numeric vector representing the normalized v.
-#' @export
-#' @examples
-#' normalize(c(1,2,3))
+# Normalize a vector
 normalize = function(v) {
   normalized_v = v / norm2(v)
   return(normalized_v)
@@ -120,7 +36,7 @@ normalize = function(v) {
 
 #' Normalize a matrix row-wise
 #'
-#' This function normalizes the rows of the input matrix x by applying the normalize function to each row.
+#' This function normalizes the rows of the input matrix x by dividing each row by its L2 norm (Euclidean norm).
 #'
 #' @param x Numeric matrix.
 #' @return Numeric matrix with normalized rows.
@@ -133,25 +49,7 @@ Normalize = function(x)
   return(normalized_x)
 }
 
-#' Restrict a value to a specified range
-#'
-#' This function restricts the input value x to the specified range [lower, upper].
-#'
-#' @param x Numeric value to be restricted.
-#' @param lower Numeric value representing the lower bound of the range.
-#' @param upper Numeric value representing the upper bound of the range.
-#' @return Numeric value restricted to the specified range.
-#' @export
-#' @examples
-#' restrict(5, 0, 10)
-restrict = function(x, lower, upper)
-{
-  x = max(x, lower)
-  x = min(x, upper)
-  return(x)
-}
-
-#' Cartesian to Spherical Coordinates Conversion
+#' Convert Cartesian coordinates to cpherical coordinates (single point)
 #'
 #' Convert Cartesian coordinates to spherical coordinates.
 #'
@@ -161,7 +59,7 @@ restrict = function(x, lower, upper)
 #' The Cartesian coordinates (x, y, z) are converted to spherical coordinates (theta, phi).
 #' Theta represents the inclination angle (0 to pi), and phi represents the azimuth angle (0 to 2*pi).
 #' @examples
-#' cartesian_point <- matrix(c(1, 1, 1), nrow = 3)
+#' cartesian_point <- matrix(c(1/sqrt(3), 1/sqrt(3), 1/sqrt(3)), nrow = 3)
 #' Spherical_point <- cartesian_to_spherical(cartesian_point)
 cartesian_to_spherical = function(x)
 {
@@ -171,7 +69,7 @@ cartesian_to_spherical = function(x)
   return(spherical_coordinate)
 }
 
-#' Convert Cartesian Coordinates to Spherical Coordinates
+#' Convert Cartesian coordinates to cpherical coordinates
 #'
 #' This function converts Cartesian coordinates to spherical coordinates.
 #'
@@ -182,10 +80,10 @@ cartesian_to_spherical = function(x)
 #' Theta represents the inclination angle (0 to pi), and phi represents the azimuth angle (0 to 2*pi).
 #' @examples
 #' #example1
-#' cartesian_points1 <- matrix(c(1, 1, 1,-1, 1, -1, 0, 0, 1),ncol = 3, byrow = TRUE)
+#' cartesian_points1 <- matrix(c(1/sqrt(3), 1/sqrt(3), 1/sqrt(3),-1/sqrt(3), 1/sqrt(3), -1/sqrt(3)),ncol = 3, byrow = TRUE)
 #' Cartesian_to_Spherical(cartesian_points1)
 #' #example2
-#' cartesian_points2 <- matrix(c(4, 5, 9, -1, 0, 4, 5, 3, -1),ncol = 3, byrow = TRUE)
+#' cartesian_points2 <- matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1),ncol = 3, byrow = TRUE)
 #' Cartesian_to_Spherical(cartesian_points2)
 #' @export
 Cartesian_to_Spherical = function(x)
@@ -194,23 +92,7 @@ Cartesian_to_Spherical = function(x)
   return(spherical_coordinates)
 }
 
-#' Compute the omega vector given spherical coordinates
-#'
-#' This function computes the omega vector given spherical coordinates theta and phi.
-#'
-#' @param theta Numeric value representing the polar angle.
-#' @param phi Numeric value representing the azimuthal angle.
-#' @return Numeric vector representing the omega vector.
-#' @export
-#' @examples
-#' omega(pi/4, pi/3)
-omega = function(theta, phi)
-{
-  omega_theta_phi = c(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta))
-  return(omega_theta_phi)
-}
-
-#' Convert Spherical Coordinates to Cartesian Coordinates
+#' Convert cpherical coordinates to cartesian coordinates (single point)
 #'
 #' This function converts spherical coordinates (theta, phi) to Cartesian coordinates.
 #'
@@ -224,12 +106,12 @@ spherical_to_cartesian = function(theta_phi)
   return(cartesian_coordinate)
 }
 
-#' Convert Spherical Coordinates to Cartesian Coordinates for Multiple Points
+#' Convert spherical coordinates to Cartesian coordinates
 #'
-#' This function converts spherical coordinates (theta, phi) to Cartesian coordinates for multiple points.
+#' This function converts spherical coordinates (theta, phi) to Cartesian coordinates.
 #'
-#' @param theta_phi Matrix where each row contains the spherical coordinates (theta, phi) of a point.
-#' @return Matrix where each row contains the Cartesian coordinates (x, y, z) of a point.
+#' @param theta_phi A matrix where each row contains the spherical coordinates (theta, phi) of a point.
+#' @return A matrix where each row contains the Cartesian coordinates (x, y, z) of a point.
 #' @examples
 #' theta_phi <- matrix(c(pi/4, pi/3, pi/6, pi/4), ncol = 2, byrow = TRUE)
 #' Spherical_to_Cartesian(theta_phi)
@@ -277,18 +159,18 @@ cross_normalized = function(u, v)
   return(cross_uv_normalized)
 }
 
-#' Calculate Distance Between Two Vectors
+#' Calculate spherical distance between two vectors
 #'
-#' This function calculates the distance between two vectors using the dot product.
+#' This function calculates the spherical distance between two vectors.
 #'
 #' @param x A numeric vector.
 #' @param y A numeric vector.
 #' @return The distance between vectors x and y.
+#' @export
 #' @examples
 #' x <- c(1, 0, 0)
 #' y <- c(0, 1, 0)
 #' spherical_dist(x, y)
-#' @export
 spherical_dist = function(x, y)
 {
   spherical_dist_x_y = Acos(dot(x, y))
@@ -302,8 +184,6 @@ spherical_dist = function(x, y)
 #' @param p Numeric vector representing a point in Cartesian coordinates.
 #' @return Numeric vector representing the equal-distance projection of p onto the xy plane.
 #' @export
-#' @examples
-#' edp(c(1,1,1))
 edp = function(p)
 {
   theta_phi = cartesian_to_spherical(p)
@@ -315,16 +195,16 @@ edp = function(p)
   return(projection_p)
 }
 
-#' Compute the exponential map on a Riemannian manifold
+#' Compute the exponential map on the unit sphere.
 #'
-#' This function computes the exponential map on a Riemannian manifold given a base point x and a tangent vector v.
+#' This function computes the exponential map on the unit sphere given a base point x and a vector v.
 #'
 #' @param x Numeric vector representing the base point.
-#' @param v Numeric vector representing the tangent vector.
+#' @param v Numeric vector representing a point.
 #' @return Numeric vector representing the result of the exponential map.
 #' @export
 #' @examples
-#' Exp(c(1,0,0), c(0,1,0))
+#' Exp(c(0,0,1), c(1,1,0))
 Exp = function(x, v)
 {
   if (sum(v^2) == 0)
@@ -334,9 +214,9 @@ Exp = function(x, v)
   return(Exp_x_v)
 }
 
-#' Compute points along the geodesic connecting two points on a Riemannian manifold
+#' Compute the value of the geodesic curve connecting two points on the unit sphere for a given time point t
 #'
-#' This function computes points along the geodesic connecting two points p and q on a Riemannian manifold.
+#' This function computes points along the geodesic connecting two points p and q on the unit sphere.
 #'
 #' @param t Time parameter for the geodesic path.
 #' @param p Numeric vector representing the starting point.
@@ -344,7 +224,6 @@ Exp = function(x, v)
 #' @param a Start time parameter.
 #' @param b End time parameter.
 #' @return Numeric vector representing a point along the geodesic path.
-#' @export
 #' @examples
 #' geodesic(0.5, c(1,0,0), c(0,1,0), 0, 1)
 geodesic = function(t, p, q, a, b)
@@ -356,13 +235,13 @@ geodesic = function(t, p, q, a, b)
   return(gamma)
 }
 
-#' Compute points along the geodesic connecting two points on a Riemannian manifold at specified time points
+#' Compute the value of the geodesic curve connecting two points on the unit sphere for a given set of time points t
 #'
-#' This function computes points along the geodesic connecting two points p and q on a Riemannian manifold at specified time points.
+#' This function computes the value of the geodesic curve connecting two points p and q on the unit sphere at specified time points.
 #'
 #' @param t Numeric vector representing time points for the geodesic path.
-#' @param p Numeric vector representing the starting point.
-#' @param q Numeric vector representing the ending point.
+#' @param p Numeric vector representing the starting point on the sphere.
+#' @param q Numeric vector representing the ending point on the sphere.
 #' @param a Start time parameter.
 #' @param b End time parameter.
 #' @return Numeric matrix representing points along the geodesic path at specified time points.
@@ -376,13 +255,13 @@ Geodesic = function(t, p, q, a, b)
   return(gamma)
 }
 
-#' Generate knots for the piecewise gedeosic curve based on the quantiles.
+#' Generate knots for the piecewise geodesic curve based on the quantiles
 #'
-#' This function computes points along the geodesic connecting two points p and q on a Riemannian manifold at specified time points.
+#' This generates a sequence of knots for a given set of time points based on the quantiles.
 #'
 #' @param x Numeric vector representing time points for the geodesic path.
-#' @param dimension Numeric vector representing the starting point.
-#' @param tiny Numeric vector representing the ending point.
+#' @param dimension Numeric vector the number of knots.
+#' @param tiny Numeric value representing a small constant that slightly expands the boundary.
 #' @return Numeric vector representing knots sequence in the time domain.
 #' @export
 #' @examples
@@ -403,25 +282,27 @@ knots_quantile = function(x, dimension, tiny = 1e-5)
 
 #' Penalized Linear Spherical Spline
 #'
-#' This function fits a penalized linear spherical spline to the given data.
+#' This function fits a penalized piecewise geodesic curve (linear spherical spline) to the given data.
 #'
-#' This function estimates the optimal control points and knots for the given data, fits the model, and returns the optimized result.
-#' Internally, coordinate-wise gradient descent is used to minimize the loss of a given model, and a penalty term is added to control the complexity of the model.
-#' Additionally, the BIC (Bayesian Information Criterion) value is calculated according to the model's complexity to provide information for model selection.
+#' The goal is to find the optimal piecewise geodesic curve for the given spherical data while controlling model complexity through penalty terms.
+#' This function computes the optimal control points and knots for the given data and returns the fitted result.
+#' Internally, coordinate-wise gradient descent is used to minimize the loss function, and a penalty term is added to control the complexity of the model.
+#' The BIC (Bayesian Information Criterion) value is calculated according to the model's complexity to provide information for model selection.
 #' The function constructs piecewise curves using the piecewise_geodesic function and employs penalty terms to control the complexity of the model by updating control points and knots.
-#' Its purpose is to find the optimal linear piecewise spline for the given data while controlling model complexity through penalty terms.
+#' To see how to use the function in practical applications, refer to the README or https://github.com/kybak90/spheresmooth.
+#'
 #' @param t A numeric vector representing the time or location.
-#' @param y A matrix where each row represents a data point.
+#' @param y A matrix where each row represents a data point on the sphere.
 #' @param initial_control_points An optional matrix specifying initial control points. Default is NULL.
 #' @param dimension An integer specifying the dimension of the spline.
 #' @param initial_knots An optional numeric vector specifying initial knots. Default is NULL.
 #' @param lambdas A numeric vector specifying the penalization parameters.
-#' @param step_size A numeric value specifying the step size for optimization. Default is 0.01.
+#' @param step_size A numeric value specifying the step size for optimization. Default is 1.
 #' @param maxiter An integer specifying the maximum number of iterations. Default is 1000.
-#' @param epsilon_iter A numeric value specifying the convergence criterion for iterations. Default is 1e-05.
-#' @param jump_eps A numeric value specifying the threshold for pruning control points based on jump size. Default is 1e-02.
+#' @param epsilon_iter A numeric value specifying the convergence criterion for iterations. Default is 1e-03.
+#' @param jump_eps A numeric value specifying the threshold for pruning control points based on jump size. Default is 1e-04.
 #' @param verbose A logical value indicating whether to print progress information. Default is FALSE.
-#' @return A list containing the fitted result for each complexity parameter and bic values for model selection. One might choose the element that corresponds to the minimum bic values as illustrated in the example.
+#' @return A list containing the fitted result for each complexity parameter and BIC values for model selection. One might choose the element that corresponds to the minimum BIC values as illustrated in the example.
 #' @export
 penalized_linear_spherical_spline = function(t, y, initial_control_points = NULL, dimension, initial_knots,
                                                   lambdas, step_size = 1, maxiter = 1000,
@@ -542,22 +423,24 @@ penalized_linear_spherical_spline = function(t, y, initial_control_points = NULL
 #' @export
 #' @details This function calculates the piecewise geodesic curve between control points based on the provided knots. The geodesic curve is computed segment by segment between adjacent control points. It interpolates the path between control points in a geodesic manner, ensuring the shortest path along the surface.
 #' @examples
+#' # `rgl` package and `sphereplot` pacakges are needed for the visualizaiton of the following example.
 #' # Define control points and knots
-#' control_points <- matrix(c(2, 1, 0,   # Control point 1
-#'                           3, 4, 2,   # Control point 2
-#'                           5, 6, 3,   # Control point 3
-#'                           7, 2, 1),  # Control point 4
-#'                         nrow = 4, byrow = TRUE)
-#' knots <- c(0, 1, 2, 3, 4)  # Knots indicating transitions
+#' library(rgl)
+#' library(sphereplot)
+#' control_points <- matrix(c(1, 0, 0,                         # Control point 1
+#'                           1/sqrt(2), 1/sqrt(2), 0,          # Control point 2
+#'                           -1/sqrt(3), 1/sqrt(3), 1/sqrt(3), # Control point 3
+#'                           0, 0, 1),                         # Control point 4
+#'                           nrow = 4, byrow = TRUE)
+#' knots <- c(1, 2, 3, 3.5)  # Knots indicating transitions
 #' # Example of generating piecewise geodesic curve
-#' t_example <- seq(0, 4, by = 0.1)
+#' t_example <- seq(0, 4, by = 0.01)
 #' gamma_example <- piecewise_geodesic(t_example, control_points, knots)
 #' # Plotting the piecewise geodesic curve
-#' rgl.sphgrid(deggap = 90, col.long = "skyblue", col.lat = "skyblue")
-#' spheres3d(x = 0, y = 0, z = 0, radius = 1, col = "grey",
-#'          alpha = 0.05)
-#' pch3d(rbind(v, w), col = "blue", cex = 0.3)
-#' lines3d(gamma_example, col = "red", lty = 2)
+#' rgl.sphgrid(deggap = 45, col.long = "skyblue", col.lat = "skyblue")
+#' spheres3d(x = 0, y = 0, z = 0, radius = 1, col = "grey", alpha = 0.05)
+#' pch3d(control_points, col = "blue", cex = 0.2, pch = 19)
+#' lines3d(gamma_example, col = "red", lty = 1, lwd = 2)
 piecewise_geodesic = function(t, control_points, knots)
 {
   gamma = matrix(nrow = 0, ncol = 3)
@@ -573,7 +456,7 @@ piecewise_geodesic = function(t, control_points, knots)
 
 #' Calculate Loss Function
 #'
-#' This function calculates the loss function based on the distance between observed values and predicted values.
+#' This function calculates the loss function based on the squared spherical distances between observed values and predicted values on the curve.
 #'
 #' @param y Matrix of observed values.
 #' @param gamma Matrix of predicted values.
@@ -589,18 +472,75 @@ calculate_loss = function(y, gamma)
   return(loss)
 }
 
+# Compute the arccosine of x
+Acos = function(x)
+{
+  x = restrict(x, -1.0, +1.0)
+  return(acos(x))
+}
 
-#' Compute the Riemannian gradient penalty
-#'
-#' This function computes the Riemannian gradient penalty given control points, knots, and index.
-#'
-#' @param control_points Matrix representing the control points.
-#' @param knots Numeric vector representing the knots.
-#' @param index Index for computing the Riemannian gradient penalty.
-#' @return A list containing Riemannian gradient and the exponential map of the negative Riemannian gradient.
-#' @export
-#' @examples
-#' R_gradient_penalty(matrix(c(1,0,0,0,1,0,0,0,1), 3), c(0, 1, 2), 2)
+# Compute the arcsine of x
+Asin = function(x)
+{
+  x = restrict(x, -1.0, +1.0)
+  return(asin(x))
+}
+
+# Compute the arc tangent of y/x
+Atan = function(y, x)
+{
+  # Special cases:
+  if (x == 0.0)
+  {
+    if (0.0 < y)
+      atan_yx = pi / 2.0
+    else if (y < 0.0 )
+      atan_yx = 3.0 * pi / 2.0
+    else if ( y == 0.0 )
+      atan_yx = 0.0
+  }
+  else if (y == 0.0)
+  {
+    if (0.0 < x)
+      atan_yx = 0.0
+    else if (x < 0.0)
+      atan_yx = pi
+  }
+  else
+  {
+
+    abs_y = abs(y)
+    abs_x = abs(x)
+    theta = atan2(abs_y, abs_x)
+    if (0.0 < x & 0.0 < y)
+      atan_yx = theta
+    else if (x < 0.0 & 0.0 < y)
+      atan_yx = pi - theta
+    else if (x < 0.0 & y < 0.0)
+      atan_yx = pi + theta
+    else if (0.0 < x & y < 0.0)
+      atan_yx = 2.0 * pi - theta
+  }
+  return(atan_yx)
+}
+
+# Restrict a value to a specified range
+restrict = function(x, lower, upper)
+{
+  x = max(x, lower)
+  x = min(x, upper)
+  return(x)
+}
+
+# Compute the omega vector given spherical coordinates
+omega = function(theta, phi)
+{
+  omega_theta_phi = c(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta))
+  return(omega_theta_phi)
+}
+
+
+# Compute the Riemannian gradient penalty
 R_gradient_penalty = function(control_points, knots, index)
 {
   # initial setting
@@ -689,14 +629,7 @@ R_gradient_penalty = function(control_points, knots, index)
   return(list(R_grad = R_gradients, Exp_Rg = Exp_R_gradients))
 }
 
-#' Calculate Jump Vector for Linear Spline
-#'
-#' This function calculates the jump vector for a linear spline model.
-#'
-#' @param control_points Matrix of control points.
-#' @param knots Vector of knots.
-#' @return Jump vector.
-#' @export
+# Calculate Jump Vector for Linear Spline
 jump_linear = function(control_points, knots)
 {
   number_penalty = nrow(control_points) - 2
@@ -715,17 +648,7 @@ jump_linear = function(control_points, knots)
   return(jump_vector)
 }
 
-#' Calculate the Gradient of Loss Function for Linear Spline Curve
-#'
-#' This function calculates the gradient of the loss function for a linear spline curve.
-#'
-#' @param y Matrix of observed values.
-#' @param t Vector of time or location values.
-#' @param control_points Matrix of control points.
-#' @param knots Vector of knots.
-#' @param index Index of the control point.
-#' @return Matrix containing the gradient of the loss function.
-#' @export
+# Calculate the Gradient of Loss Function for Linear Spline Curve
 Rgradient_loss_linear_spline = function(y, t, control_points, knots, index)
 {
   Rgrad = matrix(0, 1, 3)

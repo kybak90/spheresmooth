@@ -2,21 +2,21 @@
 % Please edit documentation in R/linear-spherical-spline.R
 \name{Exp}
 \alias{Exp}
-\title{Compute the exponential map on a Riemannian manifold}
+\title{Compute the exponential map on the unit sphere.}
 \usage{
 Exp(x, v)
 }
 \arguments{
 \item{x}{Numeric vector representing the base point.}
 
-\item{v}{Numeric vector representing the tangent vector.}
+\item{v}{Numeric vector representing a point.}
 }
 \value{
 Numeric vector representing the result of the exponential map.
 }
 \description{
-This function computes the exponential map on a Riemannian manifold given a base point x and a tangent vector v.
+This function computes the exponential map on the unit sphere given a base point x and a vector v.
 }
 \examples{
-Exp(c(1,0,0), c(0,1,0))
+Exp(c(0,0,1), c(1,1,0))
 }

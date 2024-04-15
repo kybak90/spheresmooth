@@ -21,7 +21,7 @@ penalized_linear_spherical_spline(
 \arguments{
 \item{t}{A numeric vector representing the time or location.}
 
-\item{y}{A matrix where each row represents a data point.}
+\item{y}{A matrix where each row represents a data point on the sphere.}
 
 \item{initial_control_points}{An optional matrix specifying initial control points. Default is NULL.}
 
@@ -31,26 +31,27 @@ penalized_linear_spherical_spline(
 
 \item{lambdas}{A numeric vector specifying the penalization parameters.}
 
-\item{step_size}{A numeric value specifying the step size for optimization. Default is 0.01.}
+\item{step_size}{A numeric value specifying the step size for optimization. Default is 1.}
 
 \item{maxiter}{An integer specifying the maximum number of iterations. Default is 1000.}
 
-\item{epsilon_iter}{A numeric value specifying the convergence criterion for iterations. Default is 1e-05.}
+\item{epsilon_iter}{A numeric value specifying the convergence criterion for iterations. Default is 1e-03.}
 
-\item{jump_eps}{A numeric value specifying the threshold for pruning control points based on jump size. Default is 1e-02.}
+\item{jump_eps}{A numeric value specifying the threshold for pruning control points based on jump size. Default is 1e-04.}
 
 \item{verbose}{A logical value indicating whether to print progress information. Default is FALSE.}
 }
 \value{
-A list containing the fitted result for each complexity parameter and bic values for model selection. One might choose the element that corresponds to the minimum bic values as illustrated in the example.
+A list containing the fitted result for each complexity parameter and BIC values for model selection. One might choose the element that corresponds to the minimum BIC values as illustrated in the example.
 }
 \description{
-This function fits a penalized linear spherical spline to the given data.
+This function fits a penalized piecewise geodesic curve (linear spherical spline) to the given data.
 }
 \details{
-This function estimates the optimal control points and knots for the given data, fits the model, and returns the optimized result.
-Internally, coordinate-wise gradient descent is used to minimize the loss of a given model, and a penalty term is added to control the complexity of the model.
-Additionally, the BIC (Bayesian Information Criterion) value is calculated according to the model's complexity to provide information for model selection.
+The goal is to find the optimal piecewise geodesic curve for the given spherical data while controlling model complexity through penalty terms.
+This function computes the optimal control points and knots for the given data and returns the fitted result.
+Internally, coordinate-wise gradient descent is used to minimize the loss function, and a penalty term is added to control the complexity of the model.
+The BIC (Bayesian Information Criterion) value is calculated according to the model's complexity to provide information for model selection.
 The function constructs piecewise curves using the piecewise_geodesic function and employs penalty terms to control the complexity of the model by updating control points and knots.
-Its purpose is to find the optimal linear piecewise spline for the given data while controlling model complexity through penalty terms.
+To see how to use the function in practical applications, refer to the README or https://github.com/kybak90/spheresmooth.
 }
