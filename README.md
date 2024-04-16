@@ -8,8 +8,8 @@ noisy spherical data observed at known time. It implements a piecewise
 geodesic curve fitting method on the unit sphere based on a
 velocity-based penalization scheme. The proposed approach is implemented
 using the Riemannian block coordinate descent algorithm. To understand
-the algorithm, you can refer to Bak, K. Y., Shin, J. K., &
-Koo, J. Y. (2023)
+the algorithm, you can refer to Bak, K. Y., Shin, J. K., & Koo, J. Y.
+(2023)
 [\<doi:10.1080/02664763.2022.2054962\>](https://www.tandfonline.com/doi/full/10.1080/02664763.2022.2054962)
 for the case of order 1. Additionally, this package includes various
 functions necessary for handling spherical data.
@@ -90,6 +90,8 @@ fit[[best_index]]$control_points
 The following packages are loaded to visualize the result.
 
 ``` r
+# install.packages("rworldmap")
+# install.packages("ggplot2")
 library(rworldmap)
 #> Loading required package: sp
 #> ### Welcome to rworldmap ###

@@ -67,6 +67,8 @@ fit[[best_index]]$control_points
 
 The following packages are loaded to visualize the result.
 ```{r}
+# install.packages("rworldmap")
+# install.packages("ggplot2")
 library(rworldmap)
 library(ggplot2)
 ```
