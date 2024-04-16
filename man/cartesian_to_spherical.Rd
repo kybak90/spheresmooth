@@ -21,7 +21,8 @@ Theta represents the inclination angle (0 to pi), and phi represents the azimuth
 }
 \examples{
 #example1
-cartesian_points1 <- matrix(c(1/sqrt(3), 1/sqrt(3), 1/sqrt(3),-1/sqrt(3), 1/sqrt(3), -1/sqrt(3)),ncol = 3, byrow = TRUE)
+cartesian_points1 <- matrix(c(1/sqrt(3), 1/sqrt(3), 1/sqrt(3),-1/sqrt(3), 1/sqrt(3), -1/sqrt(3)),
+  ncol = 3, byrow = TRUE)
 Cartesian_to_Spherical(cartesian_points1)
 #example2
 cartesian_points2 <- matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1),ncol = 3, byrow = TRUE)

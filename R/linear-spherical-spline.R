@@ -80,7 +80,8 @@ cartesian_to_spherical = function(x)
 #' Theta represents the inclination angle (0 to pi), and phi represents the azimuth angle (0 to 2*pi).
 #' @examples
 #' #example1
-#' cartesian_points1 <- matrix(c(1/sqrt(3), 1/sqrt(3), 1/sqrt(3),-1/sqrt(3), 1/sqrt(3), -1/sqrt(3)),ncol = 3, byrow = TRUE)
+#' cartesian_points1 <- matrix(c(1/sqrt(3), 1/sqrt(3), 1/sqrt(3),-1/sqrt(3), 1/sqrt(3), -1/sqrt(3)),
+#'   ncol = 3, byrow = TRUE)
 #' Cartesian_to_Spherical(cartesian_points1)
 #' #example2
 #' cartesian_points2 <- matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1),ncol = 3, byrow = TRUE)
@@ -266,6 +267,7 @@ Geodesic = function(t, p, q, a, b)
 #' @export
 #' @examples
 #' knots_quantile(seq(0, 1, length.out = 100), 10)
+#' @importFrom stats quantile
 knots_quantile = function(x, dimension, tiny = 1e-5)
 {
   x = unique(x)
@@ -676,7 +678,6 @@ Rgradient_loss_linear_spline = function(y, t, control_points, knots, index)
   return(Rgrad)
 }
 
-
 gradient_linear_point = function(t, control_points, index)
 {
   grad_linear = matrix(0, 3, 3)
@@ -721,7 +722,8 @@ Rgradient_loss_linear = function(y, t, control_points, index)
   return(grad_linear_bezier)
 }
 
-# calculate c(t) = dist(p(t), q(t))
+# calculate c(t)
+#' @importFrom stats dist
 calculate_c_t = function(p_t, q_t)
 {
   c_t = rep(0, nrow(p_t))
