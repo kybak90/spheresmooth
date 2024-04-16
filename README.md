@@ -8,9 +8,9 @@ noisy spherical data observed at known time. It implements a piecewise
 geodesic curve fitting method on the unit sphere based on a
 velocity-based penalization scheme. The proposed approach is implemented
 using the Riemannian block coordinate descent algorithm. To understand
-the algorithm, you can refer to Bak, K. Y., Shin, J. K., & Koo, J. Y.
-(2023)
-[\<doi:10.1080/02664763.2022.2054962\>](https://www.tandfonline.com/doi/full/10.1080/02664763.2022.2054962)
+the algorithm, you can refer to the paper titled “Intrinsic spherical
+smoothing method based on generalized Bézier curves and sparsity
+inducing penalization” by Bak, K. Y., Shin, J. K., & Koo, J. Y. (2023)
 for the case of order 1. Additionally, this package includes various
 functions necessary for handling spherical data.
 
@@ -22,12 +22,10 @@ functions necessary for handling spherical data.
 
 ## Installation
 
-You can install the development version of spheresmooth from
-[GitHub](https://github.com/) with:
+You can install the spheresmooth from CRAN with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("kybak90/spheresmooth")
+install.packages("spheresmooth")
 ```
 
 ## Example: APW path fitting
@@ -104,6 +102,11 @@ Visualized the fitted result.
 ``` r
 worldMap = getMap()
 world.points = fortify(worldMap)
+#> Warning: `fortify(<SpatialPolygonsDataFrame>)` was deprecated in ggplot2 3.4.4.
+#> ℹ Please migrate to sf.
+#> This warning is displayed once every 8 hours.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+#> generated.
 #> Regions defined for each Polygons
 world.points$region = world.points$id
 world.df = world.points[, c("long","lat","group", "region")]
