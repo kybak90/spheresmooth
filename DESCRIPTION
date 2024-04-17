@@ -13,7 +13,7 @@ Authors@R:
            role = c("aut", "cre", "cph"),
            email = "kybak@sungshin.ac.kr",
            comment = c(ORCID = "0000-0002-4541-160X", "Sungshin Women's University")))
-Description: Fitting a smooth path to a given set of noisy spherical data observed at known time points. It implements a piecewise geodesic curve fitting method on the unit sphere based on a velocity-based penalization scheme. The proposed approach is implemented using the Riemannian block coordinate descent algorithm. To understand the method and algorithm, you can refer to Bak, K. Y., Shin, J. K., & Koo, J. Y. (2023) paper for the case of order 1. Additionally, this package includes various functions necessary for handling spherical data.
+Description: Fitting a smooth path to a given set of noisy spherical data observed at known time points. It implements a piecewise geodesic curve fitting method on the unit sphere based on a velocity-based penalization scheme. The proposed approach is implemented using the Riemannian block coordinate descent algorithm. To understand the method and algorithm, you can refer to Bak, K. Y., Shin, J. K., & Koo, J. Y. (2023) <doi:10.1080/02664763.2022.2054962> for the case of order 1. Additionally, this package includes various functions necessary for handling spherical data.
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
