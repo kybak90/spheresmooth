@@ -1,5 +1,5 @@
 ## Resubmission
-This is a resubmission. In this version I have written reference in the DESCRIPTION file in the form authors (year) <doi:...> for auto-linking.
+This is a resubmission. I have included references in the DESCRIPTION file following the format: authors (year) <doi:...> for auto-linking.
 
 
 ## R CMD check results
