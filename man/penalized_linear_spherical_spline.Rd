@@ -55,3 +55,61 @@ The BIC (Bayesian Information Criterion) value is calculated according to the mo
 The function constructs piecewise curves using the piecewise_geodesic function and employs penalty terms to control the complexity of the model by updating control points and knots.
 To see how to use the function in practical applications, refer to the README or https://github.com/kybak90/spheresmooth.
 }
+\examples{
+library(sphereplot)
+library(ggplot2)
+library(sf)
+library(rworldmap)
+apw_cartesian = spherical_to_cartesian(apw_spherical[, 2:3])
+t = apw_spherical[, 1]
+dimension = 15
+initial_knots = knots_quantile(t, dimension = dimension)
+lambda_seq = exp(seq(log(1e-07), log(1), length = 40))
+fit = penalized_linear_spherical_spline(t = t, y = apw_cartesian,
+                                        dimension = dimension,
+                                        initial_knots = initial_knots,
+                                        lambdas = lambda_seq)
+# choose a curve that minimizes the BIC
+best_index = which.min(fit$bic_list)
+best_index
+# obtained control points for the piecewise geodesic curve
+fit[[best_index]]$control_points
+
+worldMap = getMap()
+worldMap_sf = st_as_sf(worldMap)
+cp_best = cartesian_to_spherical(fit[[best_index]]$control_points)
+cp_long_lat = cp_best * 180 / pi
+cp_long_lat_df = data.frame(latitude = 90-cp_long_lat[, 1],
+                            longitude = cp_long_lat[,2])
+apw_spherical_df = data.frame(apw_spherical)
+apw_spherical_df$latitude = 90 - apw_spherical_df$latitude * 180 / pi
+apw_spherical_df$longitude = apw_spherical_df$longitude * 180 / pi
+fitted_geodesic_curve = piecewise_geodesic(seq(0, 1, length = 2000),
+                                           fit[[best_index]]$control_points,
+                                           fit[[best_index]]$knots)
+
+fitted_cs = cartesian_to_spherical(fitted_geodesic_curve)
+fitted_cs_long_lat = fitted_cs * 180 / pi
+fitted_cs_long_lat_df = data.frame(latitude = 90 - fitted_cs_long_lat[, 1],
+                                   longitude = fitted_cs_long_lat[, 2])
+
+apw_spherical_df_sf = st_as_sf(apw_spherical_df,
+                               coords = c("longitude", "latitude"), crs = 4326)
+cp_long_lat_df_sf = st_as_sf(cp_long_lat_df,
+                             coords = c("longitude", "latitude"), crs = 4326)
+fitted_cs_long_lat_df_sf = st_as_sf(fitted_cs_long_lat_df,
+                                    coords = c("longitude", "latitude"), crs = 4326)
+
+# plot
+worldmap = ggplot() +
+  geom_sf(data = worldMap_sf, color = "grey", fill = "antiquewhite") +
+  geom_sf(data = apw_spherical_df_sf, size = 0.8) +
+  geom_sf(data = cp_long_lat_df_sf, color = "blue", shape = 23, size = 4) +
+  geom_sf(data = fitted_cs_long_lat_df_sf, color = "red", size = 0.5) +
+  xlab("longitude") +
+  ylab("latitude") +
+  scale_y_continuous(breaks = (-2:2) * 30) +
+  scale_x_continuous(breaks = (-4:4) * 45) +
+  coord_sf(crs = "+proj=ortho +lat_0=38 +lon_0=120 +y_0=0 +ellps=WGS84 +no_defs")
+worldmap
+}

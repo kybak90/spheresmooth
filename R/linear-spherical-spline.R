@@ -1,3 +1,11 @@
+#' A spheresmooth package
+#'
+#' @description
+#' Fitting a smooth path to a given set of noisy spherical data observed at known time points. It implements a piecewise geodesic curve fitting method on the unit sphere based on a velocity-based penalization scheme. The proposed approach is implemented using the Riemannian block coordinate descent algorithm. To understand the method and algorithm, one can refer to Bak, K. Y., Shin, J. K., & Koo, J. Y. (2023) <doi:10.1080/02664763.2022.2054962> for the case of order 1. Additionally, this package includes various functions necessary for handling spherical data.
+#' @title Piecewise Geodesic Smoothing for Spherical Data
+#' @name spheresmooth
+NULL
+
 #' Compute the dot product of two vectors
 #'
 #' This function computes the dot product of two input vectors u and v.
@@ -29,7 +37,15 @@ norm2 = function(u)
 }
 
 # Normalize a vector
-normalize = function(v) {
+#'
+#' This function normalizes the the input vector v by dividing its L2 norm (Euclidean norm).
+#'
+#' @param v Numeric vector.
+#' @return Numeric vector with normalized.
+#' @export
+#' @examples
+#' normalize_lower(1:6)
+normalize_lower = function(v) {
   normalized_v = v / norm2(v)
   return(normalized_v)
 }
@@ -42,38 +58,19 @@ normalize = function(v) {
 #' @return Numeric matrix with normalized rows.
 #' @export
 #' @examples
-#' Normalize(matrix(c(1,2,3,4,5,6), nrow = 2, byrow = TRUE))
-Normalize = function(x)
+#' normalize(matrix(c(1,2,3,4,5,6), nrow = 2, byrow = TRUE))
+normalize = function(x)
 {
-  normalized_x = apply(x, 1, normalize)
+  normalized_x = apply(x, 1, normalize_lower)
   return(normalized_x)
 }
 
-#' Convert Cartesian coordinates to cpherical coordinates (single point)
-#'
-#' Convert Cartesian coordinates to spherical coordinates.
-#'
-#' @param x A numeric vector of length 3 representing Cartesian coordinates (x, y, z).
-#' @return A numeric vector of length 2 representing spherical coordinates (theta, phi).
-#' @details
-#' The Cartesian coordinates (x, y, z) are converted to spherical coordinates (theta, phi).
-#' Theta represents the inclination angle (0 to pi), and phi represents the azimuth angle (0 to 2*pi).
-#' @examples
-#' cartesian_point <- matrix(c(1/sqrt(3), 1/sqrt(3), 1/sqrt(3)), nrow = 3)
-#' Spherical_point <- cartesian_to_spherical(cartesian_point)
-cartesian_to_spherical = function(x)
-{
-  theta = Acos(x[3])
-  phi = Atan(x[2], x[1])
-  spherical_coordinate = c(theta, phi)
-  return(spherical_coordinate)
-}
-
-#' Convert Cartesian coordinates to cpherical coordinates
+#' Convert Cartesian coordinates to spherical coordinates
 #'
 #' This function converts Cartesian coordinates to spherical coordinates.
 #'
 #' @param x A matrix where each row represents a point in Cartesian coordinates.
+#' @param byrow logical. If TRUE (the default) the matrix is filled by rows, otherwise the matrix is filled by columns.
 #' @return A matrix where each row represents a point in spherical coordinates.
 #' @details
 #' The Cartesian coordinates (x, y, z) are converted to spherical coordinates (theta, phi).
@@ -82,48 +79,42 @@ cartesian_to_spherical = function(x)
 #' #example1
 #' cartesian_points1 <- matrix(c(1/sqrt(3), 1/sqrt(3), 1/sqrt(3),-1/sqrt(3), 1/sqrt(3), -1/sqrt(3)),
 #'   ncol = 3, byrow = TRUE)
-#' Cartesian_to_Spherical(cartesian_points1)
+#' cartesian_to_spherical(cartesian_points1)
 #' #example2
 #' cartesian_points2 <- matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1),ncol = 3, byrow = TRUE)
-#' Cartesian_to_Spherical(cartesian_points2)
+#' cartesian_to_spherical(cartesian_points2)
 #' @export
-Cartesian_to_Spherical = function(x)
+cartesian_to_spherical = function(x, byrow = TRUE)
 {
-  spherical_coordinates = t(apply(x, 1, cartesian_to_spherical))
+  if (is.vector(x))
+    x = matrix(x, ncol = 3, byrow = byrow)
+  theta = Acos(x[, 3])
+  phi = Atan(x[, 2], x[, 1])
+  spherical_coordinates = cbind(theta, phi)
   return(spherical_coordinates)
 }
 
-#' Convert cpherical coordinates to cartesian coordinates (single point)
-#'
-#' This function converts spherical coordinates (theta, phi) to Cartesian coordinates.
-#'
-#' @param theta_phi Numeric vector of length 2 containing the spherical coordinates (theta, phi).
-#' @return Numeric vector of length 3 containing the Cartesian coordinates (x, y, z).
-spherical_to_cartesian = function(theta_phi)
-{
-  theta = theta_phi[1]
-  phi = theta_phi[2]
-  cartesian_coordinate = omega(theta, phi)
-  return(cartesian_coordinate)
-}
+
 
 #' Convert spherical coordinates to Cartesian coordinates
 #'
 #' This function converts spherical coordinates (theta, phi) to Cartesian coordinates.
 #'
 #' @param theta_phi A matrix where each row contains the spherical coordinates (theta, phi) of a point.
+#' @param byrow logical. If TRUE (the default) the matrix is filled by rows, otherwise the matrix is filled by columns.
 #' @return A matrix where each row contains the Cartesian coordinates (x, y, z) of a point.
 #' @examples
 #' theta_phi <- matrix(c(pi/4, pi/3, pi/6, pi/4), ncol = 2, byrow = TRUE)
-#' Spherical_to_Cartesian(theta_phi)
+#' spherical_to_cartesian(theta_phi)
 #' @export
-Spherical_to_Cartesian = function(theta_phi)
+spherical_to_cartesian = function(theta_phi, byrow = TRUE)
 {
   if (is.vector(theta_phi))
-    theta_phi = matrix(theta_phi, ncol = 2)
-  cartesian_coordinates = t(apply(theta_phi, 1, spherical_to_cartesian))
+    theta_phi = matrix(theta_phi, ncol = 2, byrow = byrow)
+  cartesian_coordinates = omega(theta_phi[, 1], theta_phi[, 2])
   return(cartesian_coordinates)
 }
+
 
 #' Compute the cross product of two vectors
 #'
@@ -131,33 +122,19 @@ Spherical_to_Cartesian = function(theta_phi)
 #'
 #' @param u Numeric vector.
 #' @param v Numeric vector.
+#' @param normalize logical. If TRUE, returns the normalized vector of the cross product result.
 #' @return Numeric vector representing the cross product of u and v.
 #' @export
 #' @examples
 #' cross(c(1,0,0), c(0,1,0))
-cross = function(u, v)
+cross = function(u, v, normalize = FALSE)
 {
   cross_uv = c(u[2] * v[3] - u[3] * v[2],
                u[3] * v[1] - u[1] * v[3],
                u[1] * v[2] - u[2] * v[1])
+  if(normalize == TRUE)
+    return(normalize_lower(cross_uv))
   return(cross_uv)
-}
-
-#' Compute the normalized cross product of two vectors
-#'
-#' This function computes the cross product of two input vectors u and v,
-#' normalizes the result, and returns the normalized vector.
-#'
-#' @param u Numeric vector.
-#' @param v Numeric vector.
-#' @return Numeric vector representing the normalized cross product of u and v.
-#' @export
-#' @examples
-#' cross_normalized(c(1,0,0), c(0,1,0))
-cross_normalized = function(u, v)
-{
-  cross_uv_normalized = normalize(cross(u, v))
-  return(cross_uv_normalized)
 }
 
 #' Calculate spherical distance between two vectors
@@ -205,8 +182,8 @@ edp = function(p)
 #' @return Numeric vector representing the result of the exponential map.
 #' @export
 #' @examples
-#' Exp(c(0,0,1), c(1,1,0))
-Exp = function(x, v)
+#' exp_map(c(0,0,1), c(1,1,0))
+exp_map = function(x, v)
 {
   if (sum(v^2) == 0)
     return(x)
@@ -225,12 +202,13 @@ Exp = function(x, v)
 #' @param a Start time parameter.
 #' @param b End time parameter.
 #' @return Numeric vector representing a point along the geodesic path.
+#' @export
 #' @examples
-#' geodesic(0.5, c(1,0,0), c(0,1,0), 0, 1)
-geodesic = function(t, p, q, a, b)
+#' geodesic_lower(0.5, c(1,0,0), c(0,1,0), 0, 1)
+geodesic_lower = function(t, p, q, a, b)
 {
-  n = cross_normalized(p, q)
-  w = cross_normalized(n, p)
+  n = cross(p, q, normalize = TRUE)
+  w = cross(n, p, normalize = TRUE)
   theta = spherical_dist(p, q) * (t - a) / (b - a)
   gamma = p * cos(theta) + w * sin(theta)
   return(gamma)
@@ -248,11 +226,11 @@ geodesic = function(t, p, q, a, b)
 #' @return Numeric matrix representing points along the geodesic path at specified time points.
 #' @export
 #' @examples
-#' Geodesic(c(0.25, 0.5, 0.75), c(1,0,0), c(0,1,0), 0, 1)
-Geodesic = function(t, p, q, a, b)
+#' geodesic(c(0.25, 0.5, 0.75), c(1,0,0), c(0,1,0), 0, 1)
+geodesic = function(t, p, q, a, b)
 {
   t = matrix(t, length(t), 1)
-  gamma = t(apply(t, 1, geodesic, p, q, a, b))
+  gamma = t(apply(t, 1, geodesic_lower, p, q, a, b))
   return(gamma)
 }
 
@@ -306,6 +284,63 @@ knots_quantile = function(x, dimension, tiny = 1e-5)
 #' @param verbose A logical value indicating whether to print progress information. Default is FALSE.
 #' @return A list containing the fitted result for each complexity parameter and BIC values for model selection. One might choose the element that corresponds to the minimum BIC values as illustrated in the example.
 #' @export
+#' @examples
+#' library(sphereplot)
+#' library(ggplot2)
+#' library(sf)
+#' library(rworldmap)
+#' apw_cartesian = spherical_to_cartesian(apw_spherical[, 2:3])
+#' t = apw_spherical[, 1]
+#' dimension = 15
+#' initial_knots = knots_quantile(t, dimension = dimension)
+#' lambda_seq = exp(seq(log(1e-07), log(1), length = 40))
+#' fit = penalized_linear_spherical_spline(t = t, y = apw_cartesian,
+#'                                         dimension = dimension,
+#'                                         initial_knots = initial_knots,
+#'                                         lambdas = lambda_seq)
+#' # choose a curve that minimizes the BIC
+#' best_index = which.min(fit$bic_list)
+#' best_index
+#' # obtained control points for the piecewise geodesic curve
+#' fit[[best_index]]$control_points
+#'
+#' worldMap = getMap()
+#' worldMap_sf = st_as_sf(worldMap)
+#' cp_best = cartesian_to_spherical(fit[[best_index]]$control_points)
+#' cp_long_lat = cp_best * 180 / pi
+#' cp_long_lat_df = data.frame(latitude = 90-cp_long_lat[, 1],
+#'                             longitude = cp_long_lat[,2])
+#' apw_spherical_df = data.frame(apw_spherical)
+#' apw_spherical_df$latitude = 90 - apw_spherical_df$latitude * 180 / pi
+#' apw_spherical_df$longitude = apw_spherical_df$longitude * 180 / pi
+#' fitted_geodesic_curve = piecewise_geodesic(seq(0, 1, length = 2000),
+#'                                            fit[[best_index]]$control_points,
+#'                                            fit[[best_index]]$knots)
+#'
+#' fitted_cs = cartesian_to_spherical(fitted_geodesic_curve)
+#' fitted_cs_long_lat = fitted_cs * 180 / pi
+#' fitted_cs_long_lat_df = data.frame(latitude = 90 - fitted_cs_long_lat[, 1],
+#'                                    longitude = fitted_cs_long_lat[, 2])
+#'
+#' apw_spherical_df_sf = st_as_sf(apw_spherical_df,
+#'                                coords = c("longitude", "latitude"), crs = 4326)
+#' cp_long_lat_df_sf = st_as_sf(cp_long_lat_df,
+#'                              coords = c("longitude", "latitude"), crs = 4326)
+#' fitted_cs_long_lat_df_sf = st_as_sf(fitted_cs_long_lat_df,
+#'                                     coords = c("longitude", "latitude"), crs = 4326)
+#'
+#' # plot
+#' worldmap = ggplot() +
+#'   geom_sf(data = worldMap_sf, color = "grey", fill = "antiquewhite") +
+#'   geom_sf(data = apw_spherical_df_sf, size = 0.8) +
+#'   geom_sf(data = cp_long_lat_df_sf, color = "blue", shape = 23, size = 4) +
+#'   geom_sf(data = fitted_cs_long_lat_df_sf, color = "red", size = 0.5) +
+#'   xlab("longitude") +
+#'   ylab("latitude") +
+#'   scale_y_continuous(breaks = (-2:2) * 30) +
+#'   scale_x_continuous(breaks = (-4:4) * 45) +
+#'   coord_sf(crs = "+proj=ortho +lat_0=38 +lon_0=120 +y_0=0 +ellps=WGS84 +no_defs")
+#' worldmap
 penalized_linear_spherical_spline = function(t, y, initial_control_points = NULL, dimension, initial_knots,
                                                   lambdas, step_size = 1, maxiter = 1000,
                                                   epsilon_iter = 1e-03, jump_eps = 1e-04, verbose = FALSE)
@@ -350,7 +385,7 @@ penalized_linear_spherical_spline = function(t, y, initial_control_points = NULL
         step = step_size
         for (iter_step in 1 : 100)
         {
-          control_point_tmp = Exp(control_points[j, ], -Rgrad_f * step)
+          control_point_tmp = exp_map(control_points[j, ], -Rgrad_f * step)
           temp_cp[j, ] = control_point_tmp / norm2(control_point_tmp)
           gamma = piecewise_geodesic(t = t, control_points = temp_cp, knots = knots)
           Rlambda = calculate_loss(y, gamma)
@@ -449,7 +484,7 @@ piecewise_geodesic = function(t, control_points, knots)
   for (j in 1 : (nrow(control_points) - 1))
   {
     index_t = knots[j] <= t & t < knots[j + 1]
-    piece_gamma = Geodesic(t[index_t], control_points[j, ], control_points[j + 1, ],
+    piece_gamma = geodesic(t[index_t], control_points[j, ], control_points[j + 1, ],
                            knots[j], knots[j + 1])
     gamma = rbind(gamma, piece_gamma)
   }
@@ -491,53 +526,44 @@ Asin = function(x)
 # Compute the arc tangent of y/x
 Atan = function(y, x)
 {
-  # Special cases:
-  if (x == 0.0)
-  {
-    if (0.0 < y)
-      atan_yx = pi / 2.0
-    else if (y < 0.0 )
-      atan_yx = 3.0 * pi / 2.0
-    else if ( y == 0.0 )
-      atan_yx = 0.0
-  }
-  else if (y == 0.0)
-  {
-    if (0.0 < x)
-      atan_yx = 0.0
-    else if (x < 0.0)
-      atan_yx = pi
-  }
-  else
-  {
+  # Handle special cases where x or y are zero
+  atan_yx = numeric(length(y))
 
-    abs_y = abs(y)
-    abs_x = abs(x)
-    theta = atan2(abs_y, abs_x)
-    if (0.0 < x & 0.0 < y)
-      atan_yx = theta
-    else if (x < 0.0 & 0.0 < y)
-      atan_yx = pi - theta
-    else if (x < 0.0 & y < 0.0)
-      atan_yx = pi + theta
-    else if (0.0 < x & y < 0.0)
-      atan_yx = 2.0 * pi - theta
-  }
+  zero_index = (x == 0)
+
+  atan_yx[zero_index & y > 0] = pi / 2.0
+  atan_yx[zero_index & y < 0] = 3.0 * pi / 2.0
+  atan_yx[zero_index & y == 0] = 0.0
+
+  nonzero_index = !zero_index & (y == 0)
+  atan_yx[nonzero_index & x > 0] = 0.0
+  atan_yx[nonzero_index & x < 0] = pi
+
+  other_index = !(zero_index | y == 0)
+  abs_y = abs(y[other_index])
+  abs_x = abs(x[other_index])
+  theta = atan2(abs_y, abs_x)
+
+  atan_yx[other_index] = theta
+  atan_yx[other_index & (x < 0 & y > 0)] = pi - theta[other_index & (x < 0 & y > 0)]
+  atan_yx[other_index & (x < 0 & y < 0)] = pi + theta[other_index & (x < 0 & y < 0)]
+  atan_yx[other_index & (x > 0 & y < 0)] = 2.0 * pi - theta[other_index & (x > 0 & y < 0)]
+
   return(atan_yx)
 }
 
-# Restrict a value to a specified range
 restrict = function(x, lower, upper)
 {
-  x = max(x, lower)
-  x = min(x, upper)
-  return(x)
+  restrict_x = x
+  restrict_x[x < lower] = lower
+  restrict_x[x > upper] = upper
+  return(restrict_x)
 }
 
 # Compute the omega vector given spherical coordinates
 omega = function(theta, phi)
 {
-  omega_theta_phi = c(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta))
+  omega_theta_phi = cbind(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta))
   return(omega_theta_phi)
 }
 
@@ -627,7 +653,7 @@ R_gradient_penalty = function(control_points, knots, index)
   }
 
   R_gradients = t(R_gradients)
-  Exp_R_gradients = Exp(control_points[index, ], - R_gradients) / norm2(Exp(control_points[index, ], - R_gradients))
+  Exp_R_gradients = exp_map(control_points[index, ], - R_gradients) / norm2(exp_map(control_points[index, ], - R_gradients))
   return(list(R_grad = R_gradients, Exp_Rg = Exp_R_gradients))
 }
 
@@ -704,7 +730,7 @@ gradient_linear_point = function(t, control_points, index)
 Rgradient_loss_point_linear = function(y, t, control_points, index)
 {
   grad_linear_bezier = gradient_linear_point(t, control_points, index)
-  linear_bezier_t = Geodesic(t, control_points[1, ], control_points[2, ], 0, 1)
+  linear_bezier_t = geodesic(t, control_points[1, ], control_points[2, ], 0, 1)
   phi = spherical_dist(y, linear_bezier_t)
   proj = calculate_projection_p(control_points[index, ], grad_linear_bezier %*% y)
   Aphi = calculate_Apsi(phi)
