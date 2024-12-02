@@ -28,7 +28,7 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.2
 Depends: 
-    R (>= 2.10)
+    R (>= 3.5.0)
 Suggests: 
     sphereplot, rgl, ggplot2, rworldmap, sf
 URL: https://kybak90.github.io/spheresmooth/, https://github.com/kybak90/spheresmooth
