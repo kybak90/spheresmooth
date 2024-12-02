@@ -4,12 +4,14 @@
 \alias{cross}
 \title{Compute the cross product of two vectors}
 \usage{
-cross(u, v)
+cross(u, v, normalize = FALSE)
 }
 \arguments{
 \item{u}{Numeric vector.}
 
 \item{v}{Numeric vector.}
+
+\item{normalize}{logical. If TRUE, returns the normalized vector of the cross product result.}
 }
 \value{
 Numeric vector representing the cross product of u and v.

@@ -15,7 +15,10 @@ for the case of order 1. Additionally, this package includes various
 functions necessary for handling spherical data.
 
 - Authorss:
+  - Jae-Hwan Jhong, Chungbuk National University, <jjh25@cbnu.ac.kr>,
+    [ORCID:0000-0003-2266-4986](https://orcid.org/0000-0003-2266-4986%7D%7BORCID:0000-0003-2266-4986)
   - Seyoung Lee, Sungshin Women’s University, <20210861@sungshin.ac.kr>
+  - Ja-Yong Koo, Korea University, <jykoo@korea.ac.kr>
   - Kwan-Young Bak, professor at Sungshin Women’s University,
     <kybak@sungshin.ac.kr>,
     [ORCID:0000-0002-4541-160X](https://orcid.org/0000-0002-4541-160X%7D%7BORCID:0000-0002-4541-160X)
@@ -47,7 +50,7 @@ data(apw_spherical)
 Convert the data to Cartesian coordinates.
 
 ``` r
-apw_cartesian = Spherical_to_Cartesian(apw_spherical[, 2:3])
+apw_cartesian = spherical_to_cartesian(apw_spherical[, 2:3])
 ```
 
 Generate a knot sequence along the time domain with a specified
@@ -90,48 +93,57 @@ The following packages are loaded to visualize the result.
 ``` r
 # install.packages("rworldmap")
 # install.packages("ggplot2")
+# install.packages("sf")
 library(rworldmap)
 #> Loading required package: sp
 #> ### Welcome to rworldmap ###
 #> For a short introduction type :   vignette('rworldmap')
 library(ggplot2)
+library(sf)
+#> Warning: package 'sf' was built under R version 4.3.3
+#> Linking to GEOS 3.11.0, GDAL 3.5.3, PROJ 9.1.0; sf_use_s2() is TRUE
 ```
 
 Visualized the fitted result.
 
 ``` r
 worldMap = getMap()
-world.points = fortify(worldMap)
-#> Warning: `fortify(<SpatialPolygonsDataFrame>)` was deprecated in ggplot2 3.4.4.
-#> ℹ Please migrate to sf.
-#> This warning is displayed once every 8 hours.
-#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-#> generated.
-#> Regions defined for each Polygons
-world.points$region = world.points$id
-world.df = world.points[, c("long","lat","group", "region")]
-colnames(world.df)[1] = "longitude"
-colnames(world.df)[2] = "latitude"
+worldMap_sf = st_as_sf(worldMap)
 
-cp_best = Cartesian_to_Spherical(fit[[best_index]]$control_points)
+cp_best = cartesian_to_spherical(fit[[best_index]]$control_points)
 cp_long_lat = cp_best * 180 / pi
 cp_long_lat_df = data.frame(latitude = 90-cp_long_lat[, 1],
                             longitude = cp_long_lat[,2])
 
 apw_spherical_df = data.frame(apw_spherical)
-colnames(apw_spherical_df) = c("time", "latitude", "longitude")
 apw_spherical_df$latitude = 90 - apw_spherical_df$latitude * 180 / pi
 apw_spherical_df$longitude = apw_spherical_df$longitude * 180 / pi
 
+fitted_geodesic_curve = piecewise_geodesic(seq(0, 1, length = 2000), 
+                                           fit[[best_index]]$control_points, 
+                                           fit[[best_index]]$knots)
+fitted_cs = cartesian_to_spherical(fitted_geodesic_curve)
+fitted_cs_long_lat = fitted_cs * 180 / pi
+fitted_cs_long_lat_df = data.frame(latitude = 90 - fitted_cs_long_lat[, 1],
+                             longitude = fitted_cs_long_lat[, 2])
+
+apw_spherical_df_sf = st_as_sf(apw_spherical_df, 
+                               coords = c("longitude", "latitude"), crs = 4326)
+cp_long_lat_df_sf = st_as_sf(cp_long_lat_df, 
+                             coords = c("longitude", "latitude"), crs = 4326)
+fitted_cs_long_lat_df_sf = st_as_sf(fitted_cs_long_lat_df, 
+                                    coords = c("longitude", "latitude"), crs = 4326)
+
 worldmap = ggplot() +
-  geom_polygon(data = world.df, aes(x = longitude, y = latitude, group = group),colour = "grey", fill = "antiquewhite") +
+  geom_sf(data = worldMap_sf, color = "grey", fill = "antiquewhite") +
+  geom_sf(data = apw_spherical_df_sf, size = 0.8) +
+  geom_sf(data = cp_long_lat_df_sf, color = "blue", shape = 23, size = 4) +
+  geom_sf(data = fitted_cs_long_lat_df_sf, color = "red", size = 0.5) +
+  xlab("longitude") +
+  ylab("latitude") +
   scale_y_continuous(breaks = (-2:2) * 30) +
   scale_x_continuous(breaks = (-4:4) * 45) +
-  geom_point(data = apw_spherical_df, aes(x = longitude, y = latitude), cex = 0.8) +
-  geom_point(data = cp_long_lat_df, aes(x = longitude, y = latitude), shape = 23, col = 'blue', cex = 4) +
-  geom_line(data = cp_long_lat_df[1:5,], aes(x = longitude, y = latitude), col = 'red', lwd = 1) +
-  geom_line(data = cp_long_lat_df[5:8,], aes(x = longitude, y = latitude), col = 'red', lwd = 1) +
-  coord_map("ortho", orientation=c(38, 120, 0))
+  coord_sf(crs = "+proj=ortho +lat_0=38 +lon_0=120 +y_0=0 +ellps=WGS84 +no_defs")
 worldmap
 ```
 
@@ -142,17 +154,18 @@ We can obtain a zoomed version as follows.
 ``` r
 mar = 20
 zoommap = ggplot() +
-  geom_polygon(data = world.df, aes(x = longitude, y = latitude, group = group),colour = "grey", fill = "antiquewhite") +
+  geom_sf(data = worldMap_sf, color = "grey", fill = "antiquewhite") +
+  geom_sf(data = apw_spherical_df_sf, size = 0.8) +
+  geom_sf(data = cp_long_lat_df_sf, color = "blue", shape = 23, size = 4) +
+  geom_sf(data = fitted_cs_long_lat_df_sf, color = "red", size = 0.5) +
+  xlab("longitude") +
+  ylab("latitude") +
   scale_y_continuous(breaks = (-2:2) * 30) +
   scale_x_continuous(breaks = (-4:4) * 45) +
-  geom_point(data = apw_spherical_df, aes(x = longitude, y = latitude), cex = 0.8) +
-  geom_point(data = cp_long_lat_df, aes(x = longitude, y = latitude), shape = 23, col = 'blue', cex = 4) +
-  geom_line(data = cp_long_lat_df[1:5,], aes(x = longitude, y = latitude), col = 'red', lwd = 1) +
-  geom_line(data = cp_long_lat_df[5:8,], aes(x = longitude, y = latitude), col = 'red', lwd = 1) +
-  coord_cartesian(xlim = c(min(cp_long_lat_df$longitude) - mar, max(cp_long_lat_df$longitude) + mar),
-                  ylim = c(min(cp_long_lat_df$latitude) - mar, max(cp_long_lat_df$latitude) + mar)) +
-  xlab('longitude') + ylab('latitude') +
-  theme(axis.title=element_text(size = 7,face="bold"))
+  coord_sf(xlim = c(min(cp_long_lat_df$longitude) - mar, 
+                    max(cp_long_lat_df$longitude) + mar), 
+           ylim = c(min(cp_long_lat_df$latitude) - mar, 
+                    max(cp_long_lat_df$latitude) + mar))
 zoommap
 ```
 
