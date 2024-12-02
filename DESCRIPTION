@@ -31,3 +31,4 @@ Depends:
     R (>= 2.10)
 Suggests: 
     sphereplot, rgl, ggplot2, rworldmap, sf
+URL: https://kybak90.github.io/spheresmooth/
