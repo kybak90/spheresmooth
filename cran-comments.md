@@ -11,11 +11,6 @@ None of the changes in version 0.1.1 alter the functionality of the package. The
 * A package website and GitHub repository have been added to the `URL` field in the package description.
 * The GitHub repository has also been added to the `BugReports` field in the package description.
 
-## Test environments
-
-* Local macOS 15.1.1 (Sequoia), R version 4.4.1
-* win-builder (release)
-
 ## R CMD check results
 
 0 errors | 0 warnings | 0 notes
