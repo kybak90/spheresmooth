@@ -291,7 +291,7 @@ knots_quantile = function(x, dimension, tiny = 1e-5)
 #' library(rworldmap)
 #' apw_cartesian = spherical_to_cartesian(apw_spherical[, 2:3])
 #' t = apw_spherical[, 1]
-#' dimension = 4
+#' dimension = 3
 #' initial_knots = knots_quantile(t, dimension = dimension)
 #' lambda_seq = exp(seq(log(1e-04), log(1), length = 3))
 #' fit = penalized_linear_spherical_spline(t = t, y = apw_cartesian,
@@ -313,7 +313,7 @@ knots_quantile = function(x, dimension, tiny = 1e-5)
 #' apw_spherical_df = data.frame(apw_spherical)
 #' apw_spherical_df$latitude = 90 - apw_spherical_df$latitude * 180 / pi
 #' apw_spherical_df$longitude = apw_spherical_df$longitude * 180 / pi
-#' fitted_geodesic_curve = piecewise_geodesic(seq(0, 1, length = 100),
+#' fitted_geodesic_curve = piecewise_geodesic(seq(0, 1, length = 50),
 #'                                            fit[[best_index]]$control_points,
 #'                                            fit[[best_index]]$knots)
 #'
