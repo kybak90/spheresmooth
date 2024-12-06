@@ -291,9 +291,9 @@ knots_quantile = function(x, dimension, tiny = 1e-5)
 #' library(rworldmap)
 #' apw_cartesian = spherical_to_cartesian(apw_spherical[, 2:3])
 #' t = apw_spherical[, 1]
-#' dimension = 5
+#' dimension = 4
 #' initial_knots = knots_quantile(t, dimension = dimension)
-#' lambda_seq = exp(seq(log(1e-07), log(1), length = 3))
+#' lambda_seq = exp(seq(log(1e-04), log(1), length = 3))
 #' fit = penalized_linear_spherical_spline(t = t, y = apw_cartesian,
 #'                                         dimension = dimension,
 #'                                         initial_knots = initial_knots,
