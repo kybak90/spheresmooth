@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">spheresmooth</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -130,9 +130,9 @@ To see how to use the function in practical applications, refer to the README or
 <span class="r-msg co"><span class="r-pr">#&gt;</span> For a short introduction type : 	 vignette('rworldmap')</span>
 <span class="r-in"><span><span class="va">apw_cartesian</span> <span class="op">=</span> <span class="fu"><a href="spherical_to_cartesian.html">spherical_to_cartesian</a></span><span class="op">(</span><span class="va">apw_spherical</span><span class="op">[</span>, <span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">t</span> <span class="op">=</span> <span class="va">apw_spherical</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">dimension</span> <span class="op">=</span> <span class="fl">5</span></span></span>
+<span class="r-in"><span><span class="va">dimension</span> <span class="op">=</span> <span class="fl">4</span></span></span>
 <span class="r-in"><span><span class="va">initial_knots</span> <span class="op">=</span> <span class="fu"><a href="knots_quantile.html">knots_quantile</a></span><span class="op">(</span><span class="va">t</span>, dimension <span class="op">=</span> <span class="va">dimension</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">lambda_seq</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">1e-07</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, length <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">lambda_seq</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">1e-04</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, length <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">=</span> <span class="fu">penalized_linear_spherical_spline</span><span class="op">(</span>t <span class="op">=</span> <span class="va">t</span>, y <span class="op">=</span> <span class="va">apw_cartesian</span>,</span></span>
 <span class="r-in"><span>                                        dimension <span class="op">=</span> <span class="va">dimension</span>,</span></span>
 <span class="r-in"><span>                                        initial_knots <span class="op">=</span> <span class="va">initial_knots</span>,</span></span>
@@ -144,11 +144,10 @@ To see how to use the function in practical applications, refer to the README or
 <span class="r-in"><span><span class="co"># obtained control points for the piecewise geodesic curve</span></span></span>
 <span class="r-in"><span><span class="va">fit</span><span class="op">[[</span><span class="va">best_index</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">control_points</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              [,1]       [,2]      [,3]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -0.451950360 -0.1917007 0.8712013</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -0.060498389  0.2324436 0.9707265</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] -0.002348406  0.1502213 0.9886496</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]  0.026890284  0.5110933 0.8591045</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] -0.479599719  0.3764073 0.7926548</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -0.411179466 -0.1262482 0.9027695</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -0.006199886  0.1905208 0.9816636</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  0.058204917  0.4232619 0.9041358</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] -0.412493548  0.4836008 0.7719970</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">worldMap</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/rworldmap/man/getMap.html" class="external-link">getMap</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">worldMap_sf</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span><span class="va">worldMap</span><span class="op">)</span></span></span>
