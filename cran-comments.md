@@ -1,14 +1,14 @@
 ## Resubmission
 
-* In this version, I have addressed the issue flagged in the previous submission (version 0.1.1). Specifically, I have reduced the runtime of the examples to under 5 seconds.
+* In this version, I have addressed the issue flagged in the previous submission (version 0.1.2). Specifically, I have reduced the runtime of the examples to under 5 seconds.
 
 # CRAN comments
 
-This is a new version of an existing package. It updates the package to 0.1.2.
+This is a new version of an existing package. It updates the package to 0.1.3.
 
-## Changes in version 0.1.2
+## Changes in version 0.1.3
 
-None of the changes in version 0.1.2 alter the functionality of the package. They primarily address deprecated behavior and improve metadata. Specifically:
+None of the changes in version 0.1.3 alter the functionality of the package. They primarily address deprecated behavior and improve metadata. Specifically:
 
 * To prepare for the future deprecation of the `fortify` function, we have updated the world map visualizations by migrating to the `sf` package.
 * All instances where `fortify` was used have been replaced with `sf` transformations, which also improve the quality of the visualizations.

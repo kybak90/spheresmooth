@@ -1,6 +1,6 @@
 Package: spheresmooth
 Title: Piecewise Geodesic Smoothing for Spherical Data
-Version: 0.1.2
+Version: 0.1.3
 Description: Fitting a smooth path to a given set of noisy spherical data observed at known time points. It implements a piecewise geodesic curve fitting method on the unit sphere based on a velocity-based penalization scheme. The proposed approach is implemented using the Riemannian block coordinate descent algorithm. To understand the method and algorithm, one can refer to Bak, K. Y., Shin, J. K., & Koo, J. Y. (2023) <doi:10.1080/02664763.2022.2054962> for the case of order 1. Additionally, this package includes various functions necessary for handling spherical data.
 Authors@R: 
   c(person(given = "Jae-Hwan",
